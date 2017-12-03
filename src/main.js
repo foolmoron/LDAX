@@ -6,9 +6,14 @@ const lblTicker = $('#lbl-ticker');
 const lblOriginalValidation = $('#lbl-original-validation');
 const btnCreateCoin = $('#btn-create-coin');
 const pnlCreate = $('#pnl-create');
+const pnlWorth = $('#pnl-worth');
 const pnlCandlestick = $('#pnl-candlestick');
 const pnlAssets = $('#pnl-assets');
 const pnlActions = $('#pnl-actions');
+const chrWorth = $('#chr-worth');
+const gRealized = $('#g-realized');
+const gUnrealized = $('#g-unrealized');
+const gBoth = $('#g-both');
 
 // data
 let data = {};
@@ -18,6 +23,8 @@ function load() {
         name: '',
         ticker: '',
         started: false,
+        cash: 1000,
+        coin: 100,
     }, data);
 }
 function save() {
@@ -86,11 +93,57 @@ function validateCoinName() {
     btnCreateCoin.classList.toggle('disabled', ticker.length == 0 || unoriginal);
 }
 
+// charts
+function getMax(points) {
+    let maxX = 0;
+    let maxY = 0;
+    for (point of points) {
+        maxX = Math.max(maxX, point.x);
+        maxY = Math.max(maxY, point.y);
+    }
+    return {x: maxX, y: maxY};
+}
+function updateChartSize(group, max) {
+    var chart = group.parentElement;
+    var newMaxX = Math.max(max.x, chart.dataset.maxX || 0);
+    var newMaxY = Math.max(max.y, chart.dataset.maxY || 0);
+    chart.dataset.maxX = newMaxX;
+    chart.dataset.maxY = newMaxY;
+    chart.setAttribute('viewBox', `0 0 ${newMaxX} ${newMaxY}`);
+    chart.style.width = newMaxX;
+}
+function renderLineChart(group, points) {
+    while (group.children.length) {
+        group.removeChild(group.children[0]);
+    }
+    let prevPoint = {x: 0, y: 0};
+    for (point of points) {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
+        line.setAttribute('x1', prevPoint.x);
+        line.setAttribute('y1', prevPoint.y);
+        line.setAttribute('x2', point.x);
+        line.setAttribute('y2', point.y);
+        group.appendChild(line);
+        prevPoint = point;
+    }
+    updateChartSize(group, getMax(points));
+}
+function addPointToLineChart(group, points, point) {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
+    line.setAttribute('x1', points[points.length - 1].x);
+    line.setAttribute('y1', points[points.length - 1].y);
+    points.push(point);
+    line.setAttribute('x2', points[points.length - 1].x);
+    line.setAttribute('y2', points[points.length - 1].y);
+    group.appendChild(line);
+    updateChartSize(group, getMax(points));
+}
+
 // main
 function createCoin(coinName) {
     pnlCreate.classList.add('hidden');
     // reset data
-    data = {};
+    data = null;
     save();
     // start new game
     data.name = inpCoinName.value;
@@ -103,6 +156,7 @@ function createCoin(coinName) {
 function startGame() {
     lblCurrentTicker.textContent = data.ticker;
     lblCurrentCoin.textContent = `(${data.name})`;
+    pnlWorth.classList.remove('hidden');
     pnlCandlestick.classList.remove('hidden');
     pnlAssets.classList.remove('hidden');
     pnlActions.classList.remove('hidden');
@@ -115,3 +169,7 @@ if (data.started) {
 } else {
     // TODO: tutorial?? something
 }
+
+renderLineChart(gRealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.random() * 1000})));
+renderLineChart(gUnrealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.random() * 1000})));
+renderLineChart(gBoth, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.random() * 1000})));

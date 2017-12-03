@@ -110,6 +110,23 @@
         .panel > div > * {
             margin-right: 0.5rem;
         }
+
+        .chart-container {
+            display: inline-block !important;
+            width: 100%;
+            height: 20vh;
+            background-color: white;
+            border-radius: 8px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            overflow-x: scroll;
+        }
+        .chart {
+            height: calc(100% - 17px);
+            transform: scaleY(-1);
+            stroke: black;
+            stroke-width: 2;
+        }
     </style>
 </head>
 <body class="font">
@@ -139,18 +156,38 @@
         <div class="button orange-bg disabled" id="btn-create-coin" onclick="createCoin($('#inp-coin-name').value)">Start Cryptocurrency Coin adVenture!</div>
         <div>WARNING: This will erase all data from the current game (if there is one)!</div>
     </div>
+    <div class="panel hidden" id="pnl-worth">
+        <div class="medium">Net Worth</div>
+        <div class="chart-container">
+            <svg class="chart line" id="chr-worth" viewBox="0 0 0 0" preserveAspectRatio="none">
+                <g id="g-realized" stroke="green"></g>
+                <g id="g-unrealized" stroke="red"></g>
+                <g id="g-both" stroke="orange"></g>
+            </svg>
+        </div>
+        <!-- chart of realized/unrealized/both gains -->
+        <!-- best realized gains -->
+        <!-- best both gains -->
+        <!-- worst both in last 100 ticks -->
+    </div>
     <div class="panel hidden" id="pnl-candlestick">
-        <!-- chart -->
+        <div class="medium">Market</div>
+        <!-- candlestick chart -->
         <!-- current price -->
         <!-- market cap in cash -->
     </div>
     <div class="panel hidden" id="pnl-assets">
-        <!-- current cash -->
+        <div class="medium">Assets</div>
+        <div>
+
+        </div>
         <!-- current coin -->
         <!-- buy coin with cash -->
+        <!-- current cash -->
         <!-- sell coin for cash -->
     </div>
     <div class="panel hidden" id="pnl-actions">
+        <div class="medium">Actions</div>
         <!-- list of action with market cap limits -->
         <!-- feed of messages? -->
     </div>
