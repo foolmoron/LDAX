@@ -1,9 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="shortcut icon" type="image/png" href="./favicon.png"/>
-    <script src="./src/main.js"></script>
+    <title>LDAX - Ludum Dare Asset Exchange by @foolmoron</title>
+    <link rel="shortcut icon" type="image/png" href="./favicon.png" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,800,900" rel="stylesheet">
+    <script src="./src/lib.js"></script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .invisible {
+            visibility: hidden;
+        }
+        .visible {
+            visibility: visible;
+        }
+        .font {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .orange {
+            color: #e53;
+        }
+        .yellow {
+            color: #f79122;
+        }
+        .red {
+            color: #f54f4f;
+        }
+        .orange-bg {
+            background-color: #e53;
+        }
+        .yellow-bg {
+            background-color: #f79122;
+        }
+        .heavy {
+            font-size: 3.3rem;
+            font-weight: 900;
+        }
+        .medium {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .regular {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        input {
+            padding: 0.3rem;
+            font-size: 1.3rem;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .header {
+            display: flex;
+            color: #d8d8d8;
+            background-color: #1f2429;
+            padding: 0.2rem 0.5rem;
+            align-items: center;
+        }
+        .header > div {
+            margin-right: 1rem;
+        }
+        .header a {
+            color: #d8d8d8;
+        }
+
+        .button {
+            display: inline-block !important;
+            color: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .button:hover {
+            opacity: 0.75;
+        }
+        .button.disabled {
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .panel {
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            margin: 8px;
+            margin-bottom: 0px;
+        }
+        .panel > div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-top: 0.3rem;
+        }
+        .panel > div:first-child {
+            margin-top: 0;
+        }
+        .panel > div > * {
+            margin-right: 0.5rem;
+        }
+    </style>
 </head>
-<body>
-    
+<body class="font">
+    <div class="header">
+        <div class="heavy"><span class="orange">L</span><span class="yellow">D</span>AX</div>
+        <div class="medium">
+            <span class="orange">Ludum</span> <span class="yellow">Dare</span> Asset Exchange
+            <div class="regular">by <a href="https://twitter.com/foolmoron" target="_blank">@foolmoron</a> for <a href="https://ldjam.com" target="_blank">LD40</a></div>
+        </div>
+        <div class="button orange-bg" id="btn-create-panel" onclick="$('#create').classList.toggle('hidden')">Create New Coin!</div>
+        <div class="medium">Current Coin: <span id="lbl-current-coin"></span></div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column;">
+            <div class="button yellow-bg medium" id="btn-settings" style="width: 1rem; align-self: flex-end;">?</div>
+        </div>
+    </div>
+    <div class="panel hidden" id="create">
+        <div>
+            <input id="inp-coin-name" type="text" placeholder="Enter new coin name" oninput="validateCoinName()" />
+            <span>Ticker symbol: </span>
+            <span class="medium" id="lbl-ticker">LDX</span>
+        </div>
+        <div class="red hidden" id="lbl-original-validation">Try something a little more original...</div>
+        <div class="button orange-bg" id="btn-create-coin">Create</div>
+        <div>WARNING: This will erase all data from the current game (if there is one)!</div>
+    </div>
+    <script src="./src/main.js"></script>
 </body>
+</html>
