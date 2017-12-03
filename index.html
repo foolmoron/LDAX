@@ -119,21 +119,40 @@
             <span class="orange">Ludum</span> <span class="yellow">Dare</span> Asset Exchange
             <div class="regular">by <a href="https://twitter.com/foolmoron" target="_blank">@foolmoron</a> for <a href="https://ldjam.com" target="_blank">LD40</a></div>
         </div>
-        <div class="button orange-bg" id="btn-create-panel" onclick="$('#create').classList.toggle('hidden')">Create New Coin!</div>
-        <div class="medium">Current Coin: <span id="lbl-current-coin"></span></div>
+        <div class="button orange-bg" id="btn-create-panel" onclick="$('#pnl-create').classList.toggle('hidden')">Create New Coin!</div>
+        <div style="display: flex; align-items: center;">
+            Current Coin: 
+            <span class="medium" id="lbl-current-ticker" style="margin: 0 0.5rem;">NONE</span>
+            <span id="lbl-current-coin"></span>
+        </div>
         <div style="flex-grow: 1; display: flex; flex-direction: column;">
             <div class="button yellow-bg medium" id="btn-settings" style="width: 1rem; align-self: flex-end;">?</div>
         </div>
     </div>
-    <div class="panel hidden" id="create">
+    <div class="panel hidden" id="pnl-create">
         <div>
             <input id="inp-coin-name" type="text" placeholder="Enter new coin name" oninput="validateCoinName()" />
             <span>Ticker symbol: </span>
-            <span class="medium" id="lbl-ticker">LDX</span>
+            <span class="medium" id="lbl-ticker"></span>
         </div>
         <div class="red hidden" id="lbl-original-validation">Try something a little more original...</div>
-        <div class="button orange-bg" id="btn-create-coin">Create</div>
+        <div class="button orange-bg disabled" id="btn-create-coin" onclick="createCoin($('#inp-coin-name').value)">Start Cryptocurrency Coin adVenture!</div>
         <div>WARNING: This will erase all data from the current game (if there is one)!</div>
+    </div>
+    <div class="panel hidden" id="pnl-candlestick">
+        <!-- chart -->
+        <!-- current price -->
+        <!-- market cap in cash -->
+    </div>
+    <div class="panel hidden" id="pnl-assets">
+        <!-- current cash -->
+        <!-- current coin -->
+        <!-- buy coin with cash -->
+        <!-- sell coin for cash -->
+    </div>
+    <div class="panel hidden" id="pnl-actions">
+        <!-- list of action with market cap limits -->
+        <!-- feed of messages? -->
     </div>
     <script src="./src/main.js"></script>
 </body>
