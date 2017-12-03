@@ -120,12 +120,29 @@
             border-bottom-left-radius: 0px;
             border-bottom-right-radius: 0px;
             overflow-x: scroll;
+            overflow-y: hidden;
         }
         .chart {
-            height: calc(100% - 17px);
-            transform: scaleY(-1);
+            height: calc(100% - 12px);
             stroke: black;
             stroke-width: 2;
+            border-top: 1px solid black;
+            transform: scaleY(-1);
+        }
+        .chart.candlestick rect {
+            stroke: none;
+        }
+        .chart rect.up {
+            fill: #3df22c;
+        }
+        .chart rect.down {
+            fill: #f54c2e;
+        }
+        .chart line.up {
+            stroke: #3df22c;
+        }
+        .chart line.down {
+            stroke: #f54c2e;
         }
     </style>
 </head>
@@ -172,6 +189,11 @@
     </div>
     <div class="panel hidden" id="pnl-candlestick">
         <div class="medium">Market</div>
+        <div class="chart-container">
+            <svg class="chart candlestick" id="chr-market" viewBox="0 0 0 0" preserveAspectRatio="none">
+                <g id="g-market"></g>
+            </svg>
+        </div>
         <!-- candlestick chart -->
         <!-- current price -->
         <!-- market cap in cash -->

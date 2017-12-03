@@ -14,6 +14,8 @@ const chrWorth = $('#chr-worth');
 const gRealized = $('#g-realized');
 const gUnrealized = $('#g-unrealized');
 const gBoth = $('#g-both');
+const chrMarket = $('#chr-market');
+const gMarket = $('#g-market');
 
 // data
 let data = {};
@@ -33,7 +35,10 @@ function save() {
 }
 
 // misc
+const CANDLESTICK_WIDTH = 10;
+const CANDLESTICK_GAP = 0.25;
 const vowels = ['A','E','I','O','U'];
+
 function tickerSymbolFromCoinName(coinName) {
     const nameClean = (coinName || '').toUpperCase().replace(/[^\w\s]/gi, '');
     const nameNoSpaces = nameClean.replace(' ', '');
@@ -112,6 +117,7 @@ function updateChartSize(group, max) {
     chart.setAttribute('viewBox', `0 0 ${newMaxX} ${newMaxY}`);
     chart.style.width = newMaxX;
 }
+
 function renderLineChart(group, points) {
     while (group.children.length) {
         group.removeChild(group.children[0]);
@@ -129,6 +135,46 @@ function renderLineChart(group, points) {
     updateChartSize(group, getMax(points));
 }
 function addPointToLineChart(group, points, point) {
+    const prevPoint = points[points.length - 1] || {x: 0, y: 0};
+    points.push(point);
+    const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
+    line.setAttribute('x1', prevPoint.x);
+    line.setAttribute('y1', prevPoint.y);
+    line.setAttribute('x2', point.x);
+    line.setAttribute('y2', point.y);
+    group.appendChild(line);
+    updateChartSize(group, getMax(points));
+}
+
+function renderCandlestick(group, points) {
+    while (group.children.length) {
+        group.removeChild(group.children[0]);
+    }
+    let prevPoint = {x: 0, y: 0};
+    let x = 0;
+    for (point of points) {
+        const bottom = Math.min(prevPoint.y, point.y);
+        const height = Math.abs(point.y - prevPoint.y);
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+        rect.setAttribute('x', x + CANDLESTICK_WIDTH * (CANDLESTICK_GAP / 2));
+        rect.setAttribute('y', bottom);
+        rect.setAttribute('width', CANDLESTICK_WIDTH * (1 - CANDLESTICK_GAP));
+        rect.setAttribute('height', height);
+        rect.classList.add(point.y >= prevPoint.y ? 'up' : 'down');
+        group.appendChild(rect);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
+        line.setAttribute('x1', x + CANDLESTICK_WIDTH/2);
+        line.setAttribute('y1', bottom - (Math.max(height, 20) * Math.random() * Math.random() * 0.7));
+        line.setAttribute('x2', x + CANDLESTICK_WIDTH/2);
+        line.setAttribute('y2', bottom + height + (Math.max(height, 20) * Math.random() * Math.random() * 0.7));
+        line.classList.add(point.y >= prevPoint.y ? 'up' : 'down');
+        group.appendChild(line);
+        x += CANDLESTICK_WIDTH;
+        prevPoint = point;
+    }
+    updateChartSize(group, getMax(points));
+}
+function addPointToCandlestick(group, points, point) {
     const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
     line.setAttribute('x1', points[points.length - 1].x);
     line.setAttribute('y1', points[points.length - 1].y);
@@ -170,6 +216,7 @@ if (data.started) {
     // TODO: tutorial?? something
 }
 
-renderLineChart(gRealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.random() * 1000})));
-renderLineChart(gUnrealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.random() * 1000})));
-renderLineChart(gBoth, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.random() * 1000})));
+renderLineChart(gRealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
+renderLineChart(gUnrealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
+renderLineChart(gBoth, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
+renderCandlestick(gMarket, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
