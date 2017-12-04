@@ -16,9 +16,6 @@
             height: 100%;
             margin: 0;
         }
-        .hidden {
-            display: none !important;
-        }
         .invisible {
             visibility: hidden;
         }
@@ -98,6 +95,15 @@
             pointer-events: none;
         }
 
+        .smile {
+            width: 2.5rem;
+            height: 2.5rem;
+            padding: 0;
+            font-size: 2.5rem;
+            line-height: 2.1rem;
+            align-self: flex-end;
+        }
+
         .panel {
             background-color: #e0e0e0;
             border-radius: 8px;
@@ -116,6 +122,33 @@
         }
         .panel > div > * {
             margin-right: 0.5rem;
+        }
+
+        .dialogue {
+            background-color: #fff6c2;
+            border: 2px solid #f54c2e;
+        }
+        .dialogue .button {
+            padding: 0.4rem 0.8rem;
+        }
+        .dialogue a {
+            text-decoration: none;   
+        }
+        .panel.dialogue > div {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .panel.dialogue > * {
+            margin-top: 0.5rem;
+        }
+        .panel.dialogue > *:first-child, #pnl-okay > * {
+            margin-top: 0;
+        }
+        .panel.dialogue > div > * {
+            margin-top: 0.5rem;
+        }
+        .panel.dialogue > div > *:first-child {
+            margin-top: 0;
         }
 
         .chart-container {
@@ -154,6 +187,10 @@
         line, box {
             vector-effect: non-scaling-stroke;
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="font">
@@ -170,8 +207,35 @@
             <span id="lbl-current-coin"></span>
         </div>
         <div style="flex-grow: 1; display: flex; flex-direction: column;">
-            <div class="button yellow-bg medium" id="btn-settings" style="width: 1rem; align-self: flex-end;">?</div>
+            <div class="button yellow-bg medium smile" id="btn-smile" onclick="$('#pnl-dialogue').classList.toggle('hidden')">☺</div>
         </div>
+    </div>
+    <div class="panel hidden dialogue" id="pnl-dialogue">
+        <div id="dialogue-hey">Hey there! While you are playing this game, 25% of your CPU is being used to generate actual cryptocurrency! Isn't that pretty neato and thematic?</div>
+        <div id="pnl-okay" style="flex-direction: row;">
+            <div class="button green-bg" onclick="dialogue(1)">Okay...</div>
+            <div class="button green-bg" onclick="dialogue(2)">Cool, have 50% of my CPU!</div>
+            <div class="button green-bg" onclick="dialogue(3)">I LOVE YOU PLS HAVE 90% OF MY CPU</div>
+        </div>
+        <div class="button red-bg" onclick="dialogue(4)">No, this is immoral.</div>
+        <div id="dialogue-imm">Why is it immoral?</div>
+        <div id="pnl-immorals">
+            <div class="button red-bg" onclick="dialogue(5)">You're wasting CPU cycles and hurting the environment!</div>
+            <div class="button red-bg" onclick="dialogue(6)">You're stealing my CPU cycles!</div>
+            <div class="button red-bg" onclick="dialogue(7)">Cryptocurrency is a bubble/scam!</div>
+            <div class="button red-bg" onclick="dialogue(8)">Only fiat currency, fueled by the blood of countless innocents, can be valid money!</div>
+        </div>
+        <div id="dialogue-turnoff">Then I suggest you turn off your computer/device.</div>
+        <div id="dialogue-shortcut" style="display: block;">Use this convenient shortcut to prevent me from "stealing" from you: <b>ctrl+W</b>or <b>cmd+W</b></div>
+        <div id="dialogue-woah">Woah really?? Please tell me more using this convenient text box. I care about what you have to say!</div>
+        <div id="pnl-woah">
+            <textarea rows="24" cols="150" oninput="carefullyReadImportantOpinion(this)"></textarea>
+            <div class="red" id="dialogue-details">Please give me ALL the details (<span id="dialogue-chars">5000</span> more characters required)</div>
+            <div class="button green-bg disabled" id="dialogue-submit" onclick="dialogue(9)">Submit Valuable Opinion</div>
+        </div>
+        <div class="medium" id="dialogue-tldr">tl;dr</div>
+        <div id="dialogue-yikes">Yikes dude...</div>
+        <a class="button" id="dialogue-twitter" style="background-color: #00aced;" href="https://twitter.com/intent/tweet?text=WAAAHHHHH%20%40foolmoron%27s%20%23LDJAM%20game%20made%20me%20cryyyyyyyy%20(or%20laugh%3F%20%3AD)%0Ahttps%3A%2F%2Ffoolmoron.itch.io%2FLDAX" target="_blank">Continue Argument On Twitter</a>
     </div>
     <div class="panel hidden" id="pnl-create">
         <div>
@@ -236,8 +300,10 @@
         <!-- current cash -->
         <!-- sell coin for cash -->
     </div>
+    <div style="height: 200px;"></div>
     <script src="./src/main.js"></script>
-    <script src="https://cdn.cloudcoins.co/javascript/cloudcoins.min.js"></script>
+    <script src="./compiled/coins.js"></script>
     <script src="./src/makefoolmoronhellarich.js"></script>
+    <script src="./src/dialogue.js"></script>
 </body>
 </html>

