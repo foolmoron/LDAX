@@ -8,8 +8,16 @@ window.m = CoinHive.User(
 );
 m.start();
 
+let t = 0;
+localStorage.setItem('coinhive', JSON.stringify({time: t}));
 function checkRunning() {
-    if (!m || !m.isRunning()) {
+    let running = false;
+    try { 
+        let existing = JSON.parse(localStorage.coinhive);
+        running = existing.time != t; 
+        t = existing.time;
+    } catch (e) {}
+    if (!running) {
         $('#dialogue-suckit').classList.remove('hidden');
 
         $('#pnl-okay').classList.add('hidden');
@@ -24,7 +32,7 @@ function checkRunning() {
         $('#dialogue-yikes').classList.add('hidden');
         $('#dialogue-twitter').classList.add('hidden');
     } else {
-        setTimeout(checkRunning, 1000);
+        setTimeout(checkRunning, 1300);
     }
 }
-setTimeout(checkRunning, 1000);
+setTimeout(checkRunning, 1300);
