@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>LDAX - Ludum Dare Asset Exchange by @foolmoron</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" type="image/png" href="./favicon.png" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:500,800,900" rel="stylesheet">
     <script src="./src/lib.js"></script>
@@ -34,13 +35,19 @@
             color: #f79122;
         }
         .red {
-            color: #f54f4f;
+            color: #f54c2e;
         }
         .orange-bg {
             background-color: #e53;
         }
         .yellow-bg {
             background-color: #f79122;
+        }
+        .green-bg {
+            background-color: #18cf07;
+        }
+        .red-bg {
+            background-color: #f54c2e;
         }
         .heavy {
             font-size: 3.3rem;
@@ -144,6 +151,9 @@
         .chart line.down {
             stroke: #f54c2e;
         }
+        line, box {
+            vector-effect: non-scaling-stroke;
+        }
     </style>
 </head>
 <body class="font">
@@ -156,7 +166,7 @@
         <div class="button orange-bg" id="btn-create-panel" onclick="$('#pnl-create').classList.toggle('hidden')">Create New Coin!</div>
         <div style="display: flex; align-items: center;">
             Current Coin: 
-            <span class="medium" id="lbl-current-ticker" style="margin: 0 0.5rem;">NONE</span>
+            <span class="medium lbl-ticker" style="margin: 0 0.5rem;">NONE</span>
             <span id="lbl-current-coin"></span>
         </div>
         <div style="flex-grow: 1; display: flex; flex-direction: column;">
@@ -167,7 +177,7 @@
         <div>
             <input id="inp-coin-name" type="text" placeholder="Enter new coin name" oninput="validateCoinName()" />
             <span>Ticker symbol: </span>
-            <span class="medium" id="lbl-ticker"></span>
+            <span class="medium lbl-ticker"></span>
         </div>
         <div class="red hidden" id="lbl-original-validation">Try something a little more original...</div>
         <div class="button orange-bg disabled" id="btn-create-coin" onclick="createCoin($('#inp-coin-name').value)">Start Cryptocurrency Coin adVenture!</div>
@@ -182,10 +192,11 @@
                 <g id="g-both" stroke="orange"></g>
             </svg>
         </div>
-        <!-- chart of realized/unrealized/both gains -->
-        <!-- best realized gains -->
-        <!-- best both gains -->
-        <!-- worst both in last 100 ticks -->
+        <div style="justify-content: space-around;">
+            <div>Best Cash: <span style="font-weight: bold;">¤</span><span id="lbl-best-realized">0.00</span></div>
+            <div>Best Total: <span style="font-weight: bold;">¤</span><span id="lbl-best-both">0.00</span></div>
+            <div>Worst Total (last 100 ticks): <span style="font-weight: bold;">¤</span><span id="lbl-worst-both">0.00</span></div>
+        </div>
     </div>
     <div class="panel hidden" id="pnl-candlestick">
         <div class="medium">Market</div>
@@ -194,24 +205,31 @@
                 <g id="g-market"></g>
             </svg>
         </div>
-        <!-- candlestick chart -->
-        <!-- current price -->
-        <!-- market cap in cash -->
+        <div style="justify-content: space-around;">
+            <div>Current Price: <span style="font-weight: bold;">¤</span><span id="lbl-current-price">0.00</span></div>
+            <div>Market Cap: <span style="font-weight: bold;">¤</span><span id="lbl-market-cap">0.00</span></div>
+        </div>
     </div>
     <div class="panel hidden" id="pnl-assets">
         <div class="medium">Assets</div>
         <div>
-
+            <span style="font-size: 1.4rem">Coin: <span id="lbl-coin">0.00</span><span class="lbl-ticker" style="font-weight: bold;"></span></span>
+            <div class="button green-bg" id="btn-buy" onclick="tick(1)" style="padding: 0.2rem 0.8rem;">Buy 1 <span class="lbl-ticker"></span></div>
+            <div class="button green-bg" id="btn-buy10" onclick="tick(10)" style="padding: 0.5rem 0.8rem;">Buy 10 <span class="lbl-ticker"></span></div>
+            <div class="button green-bg" id="btn-buy100" onclick="tick(100)" style="padding: 0.8rem 0.8rem;">Buy 100 <span class="lbl-ticker"></span></div>
+            <span>[causes upward market velocity]</span>
+        </div>
+        <div>
+            <span style="font-size: 1.4rem">Cash: <span style="font-weight: bold;">¤</span><span id="lbl-cash">0.00</span></span>
+            <div class="button red-bg" id="btn-sell" onclick="tick(-1)" style="padding: 0.2rem 0.8rem;">Sell 1 <span class="lbl-ticker"></span></div>
+            <div class="button red-bg" id="btn-sell10" onclick="tick(-10)" style="padding: 0.5rem 0.8rem;">Sell 10 <span class="lbl-ticker"></span></div>
+            <div class="button red-bg" id="btn-sell100" onclick="tick(-100)" style="padding: 0.8rem 0.8rem;">Sell 100 <span class="lbl-ticker"></span></div>
+            <span>[causes downward market velocity]</span>
         </div>
         <!-- current coin -->
         <!-- buy coin with cash -->
         <!-- current cash -->
         <!-- sell coin for cash -->
-    </div>
-    <div class="panel hidden" id="pnl-actions">
-        <div class="medium">Actions</div>
-        <!-- list of action with market cap limits -->
-        <!-- feed of messages? -->
     </div>
     <script src="./src/main.js"></script>
 </body>
