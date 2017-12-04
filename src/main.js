@@ -88,21 +88,20 @@ function tickerSymbolFromCoinName(coinName) {
             }
             const prevLetter = letters[l - 1] || '';
             const nextLetter = letters[l + 1] || '';
-            let bestLetter = nameNoSpaces[l];
+            letters[l] = nameNoSpaces[l];
             for (let i = nameNoSpaces.length - 1; i >= 1; i--) {
                 const letter = nameNoSpaces[i];
-                if (letter == prevLetter && bestLetter != prevLetter) {
+                if (letter == prevLetter && letters[l] != prevLetter) {
                     continue;
                 }
-                if (letter != nextLetter && bestLetter == nextLetter && coinCashHack) {
+                if (letter != nextLetter && letters[l] == nextLetter && coinCashHack) {
                     continue;
                 }
-                if (vowels.indexOf(letter) >= 0 && vowels.indexOf(bestLetter) < 0) {
+                if (vowels.indexOf(letter) >= 0 && vowels.indexOf(letters[l]) < 0) {
                     continue;
                 }
-                bestLetter = letter;
+                letters[l] = letter;
             }
-            letters[l] = bestLetter;
         }
 
         return letters.join('');
