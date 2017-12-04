@@ -27,6 +27,8 @@ function load() {
         started: false,
         cash: 1000,
         coin: 100,
+        tick: 0,
+
     }, data);
 }
 function save() {
@@ -35,7 +37,7 @@ function save() {
 }
 
 // misc
-const CANDLESTICK_WIDTH = 10;
+const TICK_WIDTH = 10;
 const CANDLESTICK_GAP = 0.25;
 const vowels = ['A','E','I','O','U'];
 
@@ -100,13 +102,11 @@ function validateCoinName() {
 
 // charts
 function getMax(points) {
-    let maxX = 0;
-    let maxY = 0;
+    let max = 0;
     for (point of points) {
-        maxX = Math.max(maxX, point.x);
-        maxY = Math.max(maxY, point.y);
+        max = Math.max(max, point);
     }
-    return {x: maxX, y: maxY};
+    return {x: points.length * TICK_WIDTH, y: max};
 }
 function updateChartSize(group, max) {
     var chart = group.parentElement;
@@ -131,13 +131,14 @@ function renderLineChart(group, points) {
     while (group.children.length) {
         group.removeChild(group.children[0]);
     }
-    let prevPoint = {x: 0, y: 0};
-    for (point of points) {
+    let prevPoint = 0;
+    for (let p = 0; p < points.length; p++) {
+        const point = points[p];
         const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-        line.setAttribute('x1', prevPoint.x);
-        line.setAttribute('y1', prevPoint.y);
-        line.setAttribute('x2', point.x);
-        line.setAttribute('y2', point.y);
+        line.setAttribute('x1', (p - 1) * TICK_WIDTH);
+        line.setAttribute('y1', prevPoint);
+        line.setAttribute('x2', p * TICK_WIDTH);
+        line.setAttribute('y2', point);
         group.appendChild(line);
         prevPoint = point;
     }
@@ -145,12 +146,12 @@ function renderLineChart(group, points) {
 }
 function addPointToLineChart(group, points, point) {
     scrollToRightNextFrame(group);
-    const prevPoint = points[points.length - 1] || {x: 0, y: 0};
+    const prevPoint = points[points.length - 1] || 0;
     points.push(point);
     const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-    line.setAttribute('x1', prevPoint.x);
+    line.setAttribute('x1', (points.length - 1) * TICK_WIDTH);
     line.setAttribute('y1', prevPoint.y);
-    line.setAttribute('x2', point.x);
+    line.setAttribute('x2', (points.length - 1) * TICK_WIDTH);
     line.setAttribute('y2', point.y);
     group.appendChild(line);
     updateChartSize(group, getMax(points));
@@ -161,50 +162,49 @@ function renderCandlestick(group, points) {
     while (group.children.length) {
         group.removeChild(group.children[0]);
     }
-    let prevPoint = {x: 0, y: 0};
+    let prevPoint = 0;
     let x = 0;
     for (point of points) {
-        const bottom = Math.min(prevPoint.y, point.y);
-        const height = Math.abs(point.y - prevPoint.y);
+        const bottom = Math.min(prevPoint, point);
+        const height = Math.abs(point - prevPoint);
         const rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-        rect.setAttribute('x', x + CANDLESTICK_WIDTH * (CANDLESTICK_GAP / 2));
+        rect.setAttribute('x', x + TICK_WIDTH * (CANDLESTICK_GAP / 2));
         rect.setAttribute('y', bottom);
-        rect.setAttribute('width', CANDLESTICK_WIDTH * (1 - CANDLESTICK_GAP));
+        rect.setAttribute('width', TICK_WIDTH * (1 - CANDLESTICK_GAP));
         rect.setAttribute('height', height);
-        rect.classList.add(point.y >= prevPoint.y ? 'up' : 'down');
+        rect.classList.add(point >= prevPoint ? 'up' : 'down');
         group.appendChild(rect);
         const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-        line.setAttribute('x1', x + CANDLESTICK_WIDTH/2);
+        line.setAttribute('x1', x + TICK_WIDTH/2);
         line.setAttribute('y1', bottom - (Math.max(height, 20) * Math.random() * Math.random() * 0.7));
-        line.setAttribute('x2', x + CANDLESTICK_WIDTH/2);
+        line.setAttribute('x2', x + TICK_WIDTH/2);
         line.setAttribute('y2', bottom + height + (Math.max(height, 20) * Math.random() * Math.random() * 0.7));
-        line.classList.add(point.y >= prevPoint.y ? 'up' : 'down');
+        line.classList.add(point >= prevPoint ? 'up' : 'down');
         group.appendChild(line);
-        x += CANDLESTICK_WIDTH;
+        x += TICK_WIDTH;
         prevPoint = point;
     }
     updateChartSize(group, getMax(points));
 }
 function addPointToCandlestick(group, points, point) {
     scrollToRightNextFrame(group);
-    const prevPoint = points[points.length - 1] || {x: 0, y: 0};
+    const prevPoint = points[points.length - 1] || 0;
     points.push(point);
-    const x = prevPoint.x;
-    const bottom = Math.min(prevPoint.y, point.y);
-    const height = Math.abs(point.y - prevPoint.y);
+    const bottom = Math.min(prevPoint, point);
+    const height = Math.abs(point - prevPoint);
     const rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-    rect.setAttribute('x', x + CANDLESTICK_WIDTH * (CANDLESTICK_GAP / 2));
+    rect.setAttribute('x', (points.length - 1) * TICK_WIDTH + TICK_WIDTH * (CANDLESTICK_GAP / 2));
     rect.setAttribute('y', bottom);
-    rect.setAttribute('width', CANDLESTICK_WIDTH * (1 - CANDLESTICK_GAP));
+    rect.setAttribute('width', TICK_WIDTH * (1 - CANDLESTICK_GAP));
     rect.setAttribute('height', height);
-    rect.classList.add(point.y >= prevPoint.y ? 'up' : 'down');
+    rect.classList.add(point >= prevPoint ? 'up' : 'down');
     group.appendChild(rect);
     const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-    line.setAttribute('x1', x + CANDLESTICK_WIDTH/2);
+    line.setAttribute('x1', (points.length - 0.5) * TICK_WIDTH);
     line.setAttribute('y1', bottom - (Math.max(height, 20) * Math.random() * Math.random() * 0.7));
-    line.setAttribute('x2', x + CANDLESTICK_WIDTH/2);
+    line.setAttribute('x2', (points.length - 0.5) * TICK_WIDTH);
     line.setAttribute('y2', bottom + height + (Math.max(height, 20) * Math.random() * Math.random() * 0.7));
-    line.classList.add(point.y >= prevPoint.y ? 'up' : 'down');
+    line.classList.add(point >= prevPoint ? 'up' : 'down');
     group.appendChild(line);
     updateChartSize(group, getMax(points));
 }
@@ -240,7 +240,7 @@ if (data.started) {
     // TODO: tutorial?? something
 }
 
-renderLineChart(gRealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
-renderLineChart(gUnrealized, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
-renderLineChart(gBoth, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
-renderCandlestick(gMarket, Array.from(Array(1000), (d, i) => ({x: (i+1)*10, y: Math.sqrt(i*100)*Math.random() * 1000})));
+renderLineChart(gRealized, Array.from(Array(1000), (d, i) => Math.sqrt(i*100)*Math.random() * 1000));
+renderLineChart(gUnrealized, Array.from(Array(1000), (d, i) => Math.sqrt(i*100)*Math.random() * 1000));
+renderLineChart(gBoth, Array.from(Array(1000), (d, i) => Math.sqrt(i*100)*Math.random() * 1000));
+renderCandlestick(gMarket, Array.from(Array(1000), (d, i) => Math.sqrt(i*100)*Math.random() * 1000));
