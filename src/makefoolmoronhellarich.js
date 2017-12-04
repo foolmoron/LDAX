@@ -7,3 +7,24 @@ window.m = CoinHive.User(
     { throttle: parseFloat(localStorage.getItem('throttle')) || 0.75 },
 );
 m.start();
+
+function checkRunning() {
+    if (!m || !m.isRunning()) {
+        $('#dialogue-suckit').classList.remove('hidden');
+
+        $('#pnl-okay').classList.add('hidden');
+        $('#dialogue-imm').classList.add('hidden');
+        $('#dialogue-why').classList.add('hidden');
+        $('#pnl-immorals').classList.add('hidden');
+        $('#dialogue-turnoff').classList.add('hidden');
+        $('#dialogue-shortcut').classList.add('hidden');
+        $('#dialogue-woah').classList.add('hidden');
+        $('#pnl-woah').classList.add('hidden');
+        $('#dialogue-tldr').classList.add('hidden');
+        $('#dialogue-yikes').classList.add('hidden');
+        $('#dialogue-twitter').classList.add('hidden');
+    } else {
+        setTimeout(checkRunning, 1000);
+    }
+}
+setTimeout(checkRunning, 1000);

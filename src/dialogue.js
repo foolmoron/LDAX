@@ -2,7 +2,10 @@ function dialogue(d) {
     d = parseInt(d) || 0;
     switch(d) {
         case 0:
-            $('#dialogue-imm').classList.add('hidden');
+            $('#pnl-okay').classList.remove('hidden');
+            $('#dialogue-imm').classList.remove('hidden');
+            $('#dialogue-suckit').classList.add('hidden');
+            $('#dialogue-why').classList.add('hidden');
             $('#pnl-immorals').classList.add('hidden');
             $('#dialogue-turnoff').classList.add('hidden');
             $('#dialogue-shortcut').classList.add('hidden');
@@ -27,8 +30,12 @@ function dialogue(d) {
             localStorage.setItem('throttle', 0.10);
             $('#pnl-dialogue').classList.add('hidden');
             break;
+        case 10:
+            localStorage.setItem('throttle', null);
+            $('#pnl-dialogue').classList.add('hidden');
+            break;
         case 4:
-            setTimeout(() => $('#dialogue-imm').classList.remove('hidden'), 200);
+            setTimeout(() => $('#dialogue-why').classList.remove('hidden'), 200);
             setTimeout(() => $('#pnl-immorals').classList.remove('hidden'), 900);
             break;
         case 5:

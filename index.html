@@ -213,13 +213,14 @@
     </div>
     <div class="panel hidden dialogue" id="pnl-dialogue">
         <div id="dialogue-hey">Hey there! While you are playing this game, 25% of your CPU is being used to generate actual cryptocurrency! Isn't that pretty neato and thematic?</div>
+        <div class="button green-bg" id="dialogue-suckit" onclick="dialogue(10)">Screw you, my ad/virus blocker already took care of it!</div>
         <div id="pnl-okay" style="flex-direction: row;">
             <div class="button green-bg" onclick="dialogue(1)">Okay...</div>
             <div class="button green-bg" onclick="dialogue(2)">Cool, have 50% of my CPU!</div>
             <div class="button green-bg" onclick="dialogue(3)">I LOVE YOU PLS HAVE 90% OF MY CPU</div>
         </div>
-        <div class="button red-bg" onclick="dialogue(4)">No, this is immoral.</div>
-        <div id="dialogue-imm">Why is it immoral?</div>
+        <div class="button red-bg" id="dialogue-imm" onclick="dialogue(4)">No, this is immoral.</div>
+        <div id="dialogue-why">Why is it immoral?</div>
         <div id="pnl-immorals">
             <div class="button red-bg" onclick="dialogue(5)">You're wasting CPU cycles and hurting the environment!</div>
             <div class="button red-bg" onclick="dialogue(6)">You're stealing my CPU cycles!</div>
