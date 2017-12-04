@@ -3,9 +3,10 @@ const inpCoinName = $('#inp-coin-name');
 const lblCurrentCoin = $('#lbl-current-coin');
 const lblTickers = $$('.lbl-ticker');
 const lblOriginalValidation = $('#lbl-original-validation');
+const lblUnrealized = $('#lbl-unrealized');
+const lblCurrentBoth = $('#lbl-current-both');
 const lblBestRealized = $('#lbl-best-realized');
 const lblBestBoth = $('#lbl-best-both');
-const lblWorstBoth = $('#lbl-worst-both');
 const lblCurrentPrice = $('#lbl-current-price');
 const lblMarketCap = $('#lbl-market-cap');
 const lblCoin = $('#lbl-coin');
@@ -117,7 +118,7 @@ function validateCoinName() {
 }
 
 function updateTickers(tickerText) {
-    for (ticker of lblTickers) {
+    for (const ticker of lblTickers) {
         ticker.textContent = tickerText;
     }
 }
@@ -130,16 +131,23 @@ function updateWorstBoth() {
     }
 }
 
+const format = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
 function setMoneyLabel(label, amount) {
-    label.textContent = amount.toFixed(2);
+    label.textContent =format.format(amount).substr(1);
 }
 
 function updateMoneyLabels() {
     setMoneyLabel(lblBestRealized, dataExtra.bestRealized);
     setMoneyLabel(lblBestBoth, dataExtra.bestBoth);
-    setMoneyLabel(lblWorstBoth, dataExtra.worstBoth);
+    setMoneyLabel(lblUnrealized, data.prices[data.prices.length - 1] * data.coins[data.coins.length - 1]);
+    setMoneyLabel(lblCurrentBoth, data.cashs[data.cashs.length - 1] + data.prices[data.prices.length - 1] * data.coins[data.coins.length - 1]);
     setMoneyLabel(lblCurrentPrice, data.prices[data.prices.length - 1]);
-    setMoneyLabel(lblMarketCap, data.prices[data.prices.length - 1] + 21000);
+    setMoneyLabel(lblMarketCap, data.prices[data.prices.length - 1] * 21000);
     setMoneyLabel(lblCoin, data.coins[data.coins.length - 1]);
     setMoneyLabel(lblCash, data.cashs[data.cashs.length - 1]);
 }
@@ -147,10 +155,10 @@ function updateMoneyLabels() {
 // charts
 function getMax(points) {
     let max = 0;
-    for (point of points) {
+    for (const point of points) {
         max = Math.max(max, point);
     }
-    return {x: points.length * TICK_WIDTH, y: max};
+    return {x: points.length * TICK_WIDTH, y: Math.max(0, Math.log10(max) || 0)};
 }
 function updateChartSize(group, max) {
     var chart = group.parentElement;
@@ -180,9 +188,9 @@ function renderLineChart(group, points) {
         const point = points[p];
         const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
         line.setAttribute('x1', (p - 1) * TICK_WIDTH);
-        line.setAttribute('y1', prevPoint);
+        line.setAttribute('y1', Math.max(0, Math.log10(prevPoint) || 0));
         line.setAttribute('x2', p * TICK_WIDTH);
-        line.setAttribute('y2', point + (point * Math.random()*0.01));
+        line.setAttribute('y2', Math.max(0, Math.log10(point) || 0));
         group.appendChild(line);
         prevPoint = point;
     }
@@ -194,9 +202,9 @@ function addPointToLineChart(group, points, point) {
     points.push(point);
     const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
     line.setAttribute('x1', (points.length - 2) * TICK_WIDTH);
-    line.setAttribute('y1', prevPoint);
+    line.setAttribute('y1', Math.max(0, Math.log10(prevPoint) || 0));
     line.setAttribute('x2', (points.length - 1) * TICK_WIDTH);
-    line.setAttribute('y2', point + (point * Math.random()*0.01));
+    line.setAttribute('y2', Math.max(0, Math.log10(point) || 0));
     group.appendChild(line);
     updateChartSize(group, getMax(points));
 }
@@ -208,9 +216,9 @@ function renderCandlestick(group, points) {
     }
     let prevPoint = 0;
     let x = 0;
-    for (point of points) {
-        const bottom = Math.min(prevPoint, point);
-        const height = Math.max(0.01, Math.abs(point - prevPoint));
+    for (const point of points) {
+        const bottom = Math.max(0, Math.log10(Math.min(prevPoint, point)) || 0);
+        const height = Math.max(0.01, Math.abs(Math.max(0, Math.log10(point) || 0) - Math.max(0, Math.log10(prevPoint) || 0)));
         const rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
         rect.setAttribute('x', x + TICK_WIDTH * (CANDLESTICK_GAP / 2));
         rect.setAttribute('y', bottom);
@@ -220,9 +228,9 @@ function renderCandlestick(group, points) {
         group.appendChild(rect);
         const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
         line.setAttribute('x1', x + TICK_WIDTH/2);
-        line.setAttribute('y1', bottom - (Math.min(height, 20) * Math.random() * Math.random() * 0.7));
+        line.setAttribute('y1', bottom - ((Math.min(height, 20) + Math.random() * 1.5) * Math.random() * Math.random() * 0.7));
         line.setAttribute('x2', x + TICK_WIDTH/2);
-        line.setAttribute('y2', bottom + height + (Math.min(height, 20) * Math.random() * Math.random() * 0.7));
+        line.setAttribute('y2', bottom + height + ((Math.min(height, 20) + Math.random() * 1.5) * Math.random() * Math.random() * 0.7));
         line.classList.add(point >= prevPoint ? 'up' : 'down');
         group.appendChild(line);
         x += TICK_WIDTH;
@@ -234,8 +242,8 @@ function addPointToCandlestick(group, points, point) {
     scrollToRightNextFrame(group);
     const prevPoint = points[points.length - 1] || 0;
     points.push(point);
-    const bottom = Math.min(prevPoint, point);
-    const height = Math.max(0.01, Math.abs(point - prevPoint));
+    const bottom = Math.max(0, Math.log10(Math.min(prevPoint, point)) || 0);
+    const height = Math.max(0.01, Math.abs(Math.max(0, Math.log10(point) || 0) - Math.max(0, Math.log10(prevPoint) || 0)));
     const rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
     rect.setAttribute('x', (points.length - 1) * TICK_WIDTH + TICK_WIDTH * (CANDLESTICK_GAP / 2));
     rect.setAttribute('y', bottom);
@@ -245,9 +253,9 @@ function addPointToCandlestick(group, points, point) {
     group.appendChild(rect);
     const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
     line.setAttribute('x1', (points.length - 0.5) * TICK_WIDTH);
-    line.setAttribute('y1', bottom - (Math.min(height, 20) * Math.random() * Math.random() * 0.7));
+    line.setAttribute('y1', bottom - ((Math.min(height, 20) + Math.random() * 1.5) * Math.random() * Math.random() * 0.7));
     line.setAttribute('x2', (points.length - 0.5) * TICK_WIDTH);
-    line.setAttribute('y2', bottom + height + (Math.min(height, 20) * Math.random() * Math.random() * 0.7));
+    line.setAttribute('y2', bottom + height + ((Math.min(height, 20) + Math.random() * 1.5) * Math.random() * Math.random() * 0.7));
     line.classList.add(point >= prevPoint ? 'up' : 'down');
     group.appendChild(line);
     updateChartSize(group, getMax(points));
@@ -264,6 +272,12 @@ function createCoin(coinName) {
     data.ticker = tickerSymbolFromCoinName(inpCoinName.value);
     data.started = true;
     save();
+    Array.from($$('svg')).forEach(chart => chart.dataset.maxX = chart.dataset.maxY = 0);
+    dataExtra = {
+        bestRealized: 0,
+        bestBoth: 0,
+        worstBoth: Infinity,
+    };
     startGame();
 }
 
@@ -363,7 +377,7 @@ function tick(coinChange) {
     updateMoneyLabels();
 
     // next tick
-    const nextTickTime = 1000 / Math.sqrt(difficulty + 1);
+    const nextTickTime = 1000 * Math.sqrt(difficulty + 1);
     clearTimeout(tickTimeout);
     tickTimeout = setTimeout(tick, nextTickTime);
 

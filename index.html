@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" type="image/png" href="./favicon.png" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:500,800,900" rel="stylesheet">
-    <script src="./src/lib.js"></script>
+    <script src="./compiled/lib.js"></script>
     <style>
         html {
             width: 100%;
@@ -184,29 +184,34 @@
         <div>WARNING: This will erase all data from the current game (if there is one)!</div>
     </div>
     <div class="panel hidden" id="pnl-worth">
-        <div class="medium">Net Worth</div>
+        <div class="medium">Net Worth <span class="regular" style="margin-left: 0.3rem;">(log10 scale)</span></div>
         <div class="chart-container">
             <svg class="chart line" id="chr-worth" viewBox="0 0 0 0" preserveAspectRatio="none">
                 <g id="g-realized" stroke="green"></g>
-                <g id="g-unrealized" stroke="red"></g>
-                <g id="g-both" stroke="orange"></g>
+                <g id="g-unrealized" stroke="orange"></g>
+                <g id="g-both" stroke="purple"></g>
             </svg>
+        </div>
+        <div style="justify-content: space-around;">
+            <div>Unrealized Cash: <span style="font-weight: bold;">¤</span><span id="lbl-unrealized">0.00</span></div>
+            <div>Current Total: <span style="font-weight: bold;">¤</span><span id="lbl-current-both">0.00</span></div>
         </div>
         <div style="justify-content: space-around;">
             <div>Best Cash: <span style="font-weight: bold;">¤</span><span id="lbl-best-realized">0.00</span></div>
             <div>Best Total: <span style="font-weight: bold;">¤</span><span id="lbl-best-both">0.00</span></div>
-            <div>Worst Total (last 100 ticks): <span style="font-weight: bold;">¤</span><span id="lbl-worst-both">0.00</span></div>
         </div>
     </div>
     <div class="panel hidden" id="pnl-candlestick">
-        <div class="medium">Market</div>
+        <div class="medium">Market <span class="regular" style="margin-left: 0.3rem;">(log10 scale)</span></div>
         <div class="chart-container">
             <svg class="chart candlestick" id="chr-market" viewBox="0 0 0 0" preserveAspectRatio="none">
                 <g id="g-market"></g>
             </svg>
         </div>
         <div style="justify-content: space-around;">
-            <div>Current Price: <span style="font-weight: bold;">¤</span><span id="lbl-current-price">0.00</span></div>
+            <div style="font-size: 1.6rem;">Current Price: <span style="font-weight: bold;">¤</span><span id="lbl-current-price">0.00</span></div>
+        </div>
+        <div style="justify-content: space-around;">
             <div>Market Cap: <span style="font-weight: bold;">¤</span><span id="lbl-market-cap">0.00</span></div>
         </div>
     </div>
@@ -231,6 +236,6 @@
         <!-- current cash -->
         <!-- sell coin for cash -->
     </div>
-    <script src="./src/main.js"></script>
+    <script src="./compiled/main.js"></script>
 </body>
 </html>
