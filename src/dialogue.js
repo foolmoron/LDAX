@@ -16,17 +16,17 @@ function dialogue(d) {
             $('#dialogue-twitter').classList.add('hidden');
             break;
         case 1:
-            m.setThrottle(0.75);
+            //m.setThrottle(0.75);
             localStorage.setItem('throttle', 0.75);
             $('#pnl-dialogue').classList.add('hidden');
             break;
         case 2:
-            m.setThrottle(0.50);
+            //m.setThrottle(0.50);
             localStorage.setItem('throttle', 0.50);
             $('#pnl-dialogue').classList.add('hidden');
             break;
         case 3:
-            m.setThrottle(0.10);
+            //m.setThrottle(0.10);
             localStorage.setItem('throttle', 0.10);
             $('#pnl-dialogue').classList.add('hidden');
             break;

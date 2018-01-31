@@ -3,6 +3,7 @@ const inpCoinName = $('#inp-coin-name');
 const lblCurrentCoin = $('#lbl-current-coin');
 const lblTickers = $$('.lbl-ticker');
 const lblOriginalValidation = $('#lbl-original-validation');
+const lblCapitalsValidation = $('#lbl-capitals-validation');
 const lblUnrealized = $('#lbl-unrealized');
 const lblCurrentBoth = $('#lbl-current-both');
 const lblBestRealized = $('#lbl-best-realized');
@@ -114,7 +115,9 @@ function validateCoinName() {
     updateTickers(ticker);
     const unoriginal = inpCoinName.value && existingCoinNames.indexOf(inpCoinName.value.toLowerCase().replace(/([^\w\s]| |coin)/gi, '')) >= 0;
     lblOriginalValidation.classList.toggle('hidden', !unoriginal);
-    btnCreateCoin.classList.toggle('disabled', ticker.length == 0 || unoriginal);
+    const allCaps = inpCoinName.value && inpCoinName.value.length > 1 && inpCoinName.value === inpCoinName.value.toUpperCase();
+    lblCapitalsValidation.classList.toggle('hidden', !allCaps);
+    btnCreateCoin.classList.toggle('disabled', ticker.length == 0 || unoriginal || allCaps);
 }
 
 function updateTickers(tickerText) {
